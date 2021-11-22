@@ -86,7 +86,11 @@ class MediaControls extends React.Component {
       ArrowLeft: "left",
       ArrowRight: "right",
       Space: "space",
-      Settings: ","
+      Settings: ",",
+      KeyK: "k",
+      KeyQ: "q",
+      KeyA: "a",
+      KeyD: "d"
     };
   }
 
@@ -105,6 +109,10 @@ class MediaControls extends React.Component {
   handleParentKeyboardEvent = e => {
     const { code } = e.data;
     this.handleKeyEvent(this.keyboardCodeMap[code], e);
+  };
+
+  showThoughts = () => {
+    this.props.showThoughts();
   };
 
   handleReload = () => {
@@ -140,9 +148,11 @@ class MediaControls extends React.Component {
         this.handleReload();
         break;
       case "left":
+      case "a":
         this.handleBackward();
         break;
       case "right":
+      case "d":
         this.handleForward();
         break;
       case "space":
@@ -150,6 +160,9 @@ class MediaControls extends React.Component {
         break;
       case ",":
         this.handleSettings();
+        break;
+      case "q":
+        this.showThoughts();
         break;
       default:
         break;
@@ -189,6 +202,9 @@ class MediaControls extends React.Component {
           <Button onClick={this.handleSettings} theme={theme}>
             <span className="material-icons icon-image-preview">settings</span>
           </Button>
+          <Button onClick={this.showThoughts} theme={theme}>
+            <span className="material-icons">summarize</span>
+          </Button>
           <KeyboardEventHandler
             handleKeys={Object.values(this.keyboardCodeMap)}
             onKeyEvent={this.handleKeyEvent}
@@ -205,6 +221,7 @@ class MediaControls extends React.Component {
                   <li>Play/Pause = space</li>
                   <li>Backward = left arrow</li>
                   <li>Forward = right arrow</li>
+                  <li>Show Thoughts = q</li>
                 </ul>
               </ShortcutsPane>
             )}

@@ -51,13 +51,15 @@ const HealthBarWrapper = styled("div")({
   width: "100%",
   height: "1.0rem",
   background: colors.healthBarBackground,
-  borderRadius: "1.5rem"
+  borderRadius: "1.5rem",
+  position: "relative"
 });
 
 const HealthBar = styled("div")(({ color }) => ({
   height: "100%",
   backgroundColor: color,
-  borderRadius: "inherit"
+  borderRadius: "inherit",
+  position: "absolute"
 }));
 
 const CauseOfDeath = styled("div")(({ theme }) => ({
@@ -72,20 +74,40 @@ class Avatar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showError: false
+      showError: false,
+      healthDelta: 0,
+      oldHealth: 0
     };
 
     this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.snake.health !== this.props.snake.health) {
+      this.setState({
+        healthDelta:
+          prevProps.turn === this.props.turn - 1
+            ? this.props.snake.health - prevProps.snake.health
+            : 0,
+        oldHealth:
+          prevProps.turn === this.props.turn - 1 ? prevProps.snake.health : 0
+      });
+    }
+  }
+
   render() {
     return (
       <AvatarWrapper isEliminated={this.props.snake.death ? true : false}>
         <div className="row">
           <Name>{this.props.snake.name}</Name>
-          <Length>{this.props.snake.body.length}</Length>
+          <Length>
+            {this.props.snake.health} {this.props.snake.body.length}
+          </Length>
         </div>
         <AuthorWrapper>
-          <Author>by {this.props.snake.author}</Author>
+          <Author>
+            by {this.props.snake.author} {this.state.healthDelta}
+          </Author>
           <StatusIndicator
             errorMessage={this.props.snake.error}
             clickHandler={e => this.toggleErrorMessage(e)}
@@ -100,6 +122,17 @@ class Avatar extends React.Component {
           </CauseOfDeath>
         ) : (
           <HealthBarWrapper>
+            <HealthBar
+              key={this.props.turn}
+              color={colors.red}
+              className="falling"
+              style={{
+                left: `${this.props.snake.health - 0.5}%`,
+                width: `${this.state.oldHealth -
+                  this.props.snake.health +
+                  0.5}%`
+              }}
+            />
             <HealthBar
               color={this.props.snake.color}
               style={{

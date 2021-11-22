@@ -6,6 +6,7 @@ import {
   reloadGame,
   toggleGamePause,
   toggleTheme,
+  showThoughts,
   setGameOptions,
   stepForwardFrame,
   stepBackwardFrame,
@@ -35,6 +36,7 @@ const mapStateToProps = state => {
   return {
     options: { ...storedSettings, ...settings, ...options },
     ruleset: gameState.ruleset,
+    thoughts: gameState.thoughts,
     grid: gameState.grid,
     gameNotFound: gameState.gameNotFound,
     paused: gameState.paused,
@@ -49,6 +51,7 @@ const mapDispatchToProps = dispatch => ({
   setGameOptions: options => dispatch(setGameOptions(options)),
   fetchFrames: () => dispatch(fetchFrames()),
   toggleTheme: theme => dispatch(toggleTheme(theme)),
+  showThoughts: () => dispatch(showThoughts()),
   reloadGame: () => dispatch(reloadGame()),
   toggleGamePause: paused => dispatch(toggleGamePause(paused)),
   stepForwardFrame: () => dispatch(stepForwardFrame()),

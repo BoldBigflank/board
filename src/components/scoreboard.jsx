@@ -88,6 +88,7 @@ class Scoreboard extends React.Component {
                 theme={this.props.theme}
               >
                 <Avatar
+                  turn={this.props.turn}
                   snake={snake}
                   key={"avatar" + i}
                   theme={this.props.theme}

@@ -10,13 +10,16 @@ const initialState = {
   paused: true,
   gameNotFound: false,
   highlightedSnake: null,
-  theme: themes.light
+  theme: themes.light,
+  thoughts: []
 };
 
 const reducers = (state = initialState, action) => {
   switch (action.type) {
     case types.SET_THEME:
       return { ...state, theme: action.theme };
+    case types.SET_THOUGHTS:
+      return { ...state, thoughts: action.thoughts };
     case types.SET_GAME_OPTIONS:
       action.gameOptions.turn = parseInt(action.gameOptions.turn) || 0;
       action.gameOptions.loop =

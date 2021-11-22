@@ -2,3 +2,21 @@
     display: flex;
     flex-direction: row;
 }
+
+div.falling {
+    animation: slidein .2s ease-in forwards;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+@keyframes slidein {
+    from {
+      top: 0px;
+      opacity: 0.5;
+    }
+  
+    to {
+      top: -100%;
+      opacity: 0;
+    }
+  }

@@ -128,6 +128,22 @@ class Game extends React.Component {
     return <LoadingIndicator />;
   }
 
+  renderRules() {
+    const rules = Object.keys(this.props.ruleset)
+      .filter(name => name !== "name")
+      .map(key => (
+        <div>
+          {key} - {this.props.ruleset[key]}
+        </div>
+      ));
+    return (
+      <Ruleset>
+        Rules: {this.props.ruleset.name}
+        {rules}
+      </Ruleset>
+    );
+  }
+
   renderGame() {
     const { currentFrame, options } = this.props;
     return (
@@ -140,6 +156,7 @@ class Game extends React.Component {
               food={currentFrame.food}
               foodImage={options.foodImage}
               hazards={currentFrame.hazards}
+              thoughts={this.props.thoughts}
               columns={this.props.grid.width}
               rows={this.props.grid.height}
               highlightedSnake={this.props.highlightedSnake}
@@ -149,6 +166,7 @@ class Game extends React.Component {
             <MediaControls
               currentFrame={currentFrame}
               hideControls={options.hideMediaControls === "true"}
+              showThoughts={this.props.showThoughts}
               reloadGame={this.props.reloadGame}
               toggleGamePause={this.props.toggleGamePause}
               stepBackwardFrame={this.props.stepBackwardFrame}
@@ -176,7 +194,7 @@ class Game extends React.Component {
                 highlightSnake={this.props.highlightSnake}
                 theme={this.props.theme}
               />
-              <Ruleset>Rules: {this.props.ruleset.name}</Ruleset>
+              {this.renderRules()}
             </ScoreboardWrapper>
           )}
         </section>

@@ -19,6 +19,11 @@ export const setTheme = theme => ({
   theme
 });
 
+export const setThoughts = thoughts => ({
+  type: types.SET_THOUGHTS,
+  thoughts
+});
+
 export const gameOver = () => ({
   type: types.GAME_OVER
 });
@@ -172,13 +177,71 @@ export const toggleTheme = themeToSet => {
   };
 };
 
+export const showThoughts = themeToSet => {
+  return async (dispatch, getState) => {
+    const { currentFrame, grid, ruleset } = getState().game;
+    const { food, snakes, turn, hazards } = currentFrame;
+    const url = "http://localhost:5555/move";
+    try {
+      const postSnakes = snakes.map(s => ({
+        ...s,
+        head: s.body[0],
+        length: s.body.length
+      }));
+
+      const gameState = {
+        game: {
+          ruleset: {
+            name: "royale",
+            version: "1",
+            settings: {
+              foodSpawnChance: ruleset.foodSpawnChance,
+              minimumFood: ruleset.minimumFood,
+              hazardDamagePerTurn: ruleset.damagePerTurn,
+              royale: {
+                shrinkEveryNTurns: ruleset.shrinkEveryNTurns
+              },
+              squad: {
+                allowBodyCollisions: false,
+                sharedElimination: false,
+                sharedHealth: false,
+                sharedLength: false
+              }
+            }
+          }
+        },
+        turn,
+        board: {
+          ...grid,
+          food,
+          snakes: postSnakes,
+          hazards
+        },
+        you: postSnakes.find(s => s.author === "BoldBigflank")
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(gameState)
+      });
+      const responseJson = await response.json();
+      console.log(JSON.stringify(responseJson, null, 2));
+      dispatch(setThoughts(responseJson.thoughts));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
 export const stepForwardFrame = () => {
   return async (dispatch, getState) => {
     const { currentFrame, frames } = getState().game;
-    const nextFrame = currentFrame.turn + 1;
-    const stepToFrame = getFrameByTurn(frames, nextFrame);
-    if (stepToFrame) {
-      dispatch(setCurrentFrame(stepToFrame));
+    const nextTurn = currentFrame.turn + 1;
+    const nextFrame = getFrameByTurn(frames, nextTurn);
+    if (nextFrame) {
+      dispatch(setCurrentFrame(nextFrame));
     }
   };
 };
@@ -186,10 +249,10 @@ export const stepForwardFrame = () => {
 export const stepBackwardFrame = () => {
   return async (dispatch, getState) => {
     const { currentFrame, frames } = getState().game;
-    const prevFrame = currentFrame.turn - 1;
-    const stepToFrame = getFrameByTurn(frames, prevFrame);
-    if (stepToFrame) {
-      dispatch(setCurrentFrame(stepToFrame));
+    const prevTurn = currentFrame.turn - 1;
+    const prevFrame = getFrameByTurn(frames, prevTurn);
+    if (prevFrame) {
+      dispatch(setCurrentFrame(prevFrame));
     }
   };
 };

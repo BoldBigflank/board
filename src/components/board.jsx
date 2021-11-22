@@ -12,6 +12,7 @@ class Board extends React.Component {
           food={this.props.food}
           foodImage={this.props.foodImage}
           hazards={this.props.hazards}
+          thoughts={this.props.thoughts}
           columns={this.props.columns}
           rows={this.props.rows}
           highlightedSnake={this.props.highlightedSnake}
